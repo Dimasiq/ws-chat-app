@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+  node:
+    build:
+      context: .
+    container_name: node
+    hostname: node
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./src:/usr/src/app/src
+    depends_on:
+      - mongo
+    ports:
+      - "8000:8000"
+      - "81:81"
+    networks:
+      - ws-chat-api
+
+  mongo:
+    image: mongo
+    restart: always
+    command: mongod
+    environment:
+      MONGO_INITDB_DATABASE: test
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: dbpass
+    ports:
+      - "27017:27017"
+    networks:
+      - ws-chat-api
+
+networks:
+  ws-chat-api:
+    external: true
+
